@@ -2,10 +2,8 @@ FROM curlimages/curl AS download
 
 WORKDIR /home/curl_user
 
-COPY NPVR.zip nextpvr.zip
-
 RUN mkdir nextpvr && \
-    # curl -fL -o /tmp/nextpvr/nextpvr.zip https://nextpvr.com/stable/linux/NPVR.zip && \
+    curl -fL -o nextpvr.zip https://nextpvr.com/stable/linux/NPVR.zip && \
     unzip nextpvr.zip -d nextpvr
     
 
