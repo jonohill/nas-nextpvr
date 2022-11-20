@@ -3,10 +3,9 @@
 
 set -e
 
-echo "I am $(whoami)"
 umount /recordings || true
 mkdir -p /recordings
-chown -R nextpvr:nextpvr /recordings
+chown -R nextpvr:nextpvr /recordings "$(dirname "$RCLONE_CONFIG")"
 
 exec s6-setuidgid nextpvr \
     rclone mount -v \
