@@ -1,3 +1,6 @@
+FROM ghcr.io/jonohill/docker-s6-package:3.1.2.1 AS s6
+FROM rclone/rclone:1.59.0 AS rclone
+
 FROM curlimages/curl AS download
 
 WORKDIR /home/curl_user
@@ -13,6 +16,7 @@ RUN apt-get update && apt-get install -y \
         dtv-scan-tables \
         dvb-tools \
         ffmpeg \
+        fuse \
         libc6  \
         libc6-dev \
         libdvbv5-0 \
@@ -23,9 +27,17 @@ RUN apt-get update && apt-get install -y \
 
 RUN groupadd -r nextpvr && useradd --no-log-init -r -g nextpvr nextpvr
 
+COPY --from=s6 / /
+COPY root/ /
 COPY --from=download --chown=nextpvr:nextpvr /home/curl_user/nextpvr /nextpvr
+COPY --from=rclone /usr/local/bin/rclone /usr/local/bin/rclone
+
 WORKDIR /nextpvr
 RUN find . -name DeviceHostLinux -exec chmod 755 {} \;
 
+ENV NEXTPVR_DATADIR_USERDATA=/config/
+ENV RCLONE_CONFIG=/config/rclone.conf
+
 EXPOSE 8866
-ENTRYPOINT ["dotnet", "NextPVRServer.dll"]
+
+ENTRYPOINT ["/init"]

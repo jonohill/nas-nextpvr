@@ -1,0 +1,29 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+set -e
+
+mounted() {
+    mount | grep /recordings >/dev/null
+}
+
+# wait for mount
+for _ in $(seq 60); do
+    if mounted; then
+        break
+    fi
+    echo "Waiting for mount..."
+    sleep 1
+done
+
+if ! mounted; then
+    echo "No recordings mount :/"
+    exit 1
+fi
+
+mkdir -p "${NEXTPVR_DATADIR_USERDATA%/}"
+chown -R nextpvr:nextpvr "${NEXTPVR_DATADIR_USERDATA%/}"
+
+cd /nextpvr
+exec s6-setuidgid nextpvr \
+    dotnet NextPVRServer.dll
