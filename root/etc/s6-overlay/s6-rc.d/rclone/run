@@ -5,7 +5,7 @@ set -e
 
 umount /recordings || true
 mkdir -p /recordings
-chown -R nextpvr:nextpvr /recordings "$(dirname "$RCLONE_CONFIG")"
+chown -R nextpvr:nextpvr /recordings "$(dirname "$RCLONE_CONFIG")" "${RCLONE_MOUNT_CACHE_DIR}"
 
 exec s6-setuidgid nextpvr \
     rclone mount -v \
