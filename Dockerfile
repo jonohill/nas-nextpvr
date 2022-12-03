@@ -32,6 +32,7 @@ RUN groupadd -r nextpvr && useradd --no-log-init -r -g nextpvr nextpvr
 COPY --from=s6 / /
 COPY root/ /
 COPY --from=download --chown=nextpvr:nextpvr /home/curl_user/nextpvr /nextpvr
+COPY scripts /nextpvr/custom_scripts
 
 WORKDIR /nextpvr
 RUN find . -name DeviceHostLinux -exec chmod 755 {} \;

@@ -7,6 +7,17 @@ mounted() {
     mount | grep /recordings >/dev/null
 }
 
+CONFIG_DIR="${NEXTPVR_DATADIR_USERDATA%/}"
+
+# Copy in scripts
+for script in /nextpvr/custom_scripts/*; do
+    if ! [ -f "$CONFIG_DIR/scripts/$(basename "$script")" ]; then
+        cp "$script" "$CONFIG_DIR/scripts/"
+    else
+        echo "$script already exists, skipping"
+    fi  
+done
+
 # wait for mount
 for _ in $(seq 60); do
     if mounted; then
@@ -21,8 +32,8 @@ if ! mounted; then
     exit 1
 fi
 
-mkdir -p "${NEXTPVR_DATADIR_USERDATA%/}"
-chown -R nextpvr:nextpvr "${NEXTPVR_DATADIR_USERDATA%/}"
+mkdir -p "$CONFIG_DIR"
+chown -R nextpvr:nextpvr "$CONFIG_DIR"
 
 cd /nextpvr
 exec s6-setuidgid nextpvr \
