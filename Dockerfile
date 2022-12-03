@@ -23,6 +23,8 @@ RUN apt-get update && apt-get install -y \
         libgdiplus \
         libmediainfo-dev \
         mediainfo \
+        python3 \
+        python3-magic \
     && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -r nextpvr && useradd --no-log-init -r -g nextpvr nextpvr
