@@ -32,7 +32,6 @@ RUN groupadd -r nextpvr && useradd --no-log-init -r -g nextpvr nextpvr
 COPY --from=s6 / /
 COPY root/ /
 COPY --from=download --chown=nextpvr:nextpvr /home/curl_user/nextpvr /nextpvr
-COPY --from=rclone /usr/local/bin/rclone /usr/local/bin/rclone
 
 WORKDIR /nextpvr
 RUN find . -name DeviceHostLinux -exec chmod 755 {} \;
