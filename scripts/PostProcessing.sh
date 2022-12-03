@@ -28,7 +28,7 @@ parser.add_argument('filename')
 parser.add_argument('channel_number')
 parser.add_argument('oid')
 args_ns = Args()
-args = parser.parse_args(namespace=args_ns)
+args, _ = parser.parse_known_args(namespace=args_ns)
 
 def env(var_name):
     """Get env var by name"""
