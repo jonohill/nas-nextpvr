@@ -34,6 +34,9 @@ fi
 
 mkdir -p "$CONFIG_DIR"
 chown -R nextpvr:nextpvr "$CONFIG_DIR"
+if [ -n "$RECORDED_DIR" ]; then
+    chown -R nextpvr:nextpvr "$RECORDED_DIR"
+fi
 
 cd /nextpvr
 exec s6-setuidgid nextpvr \
