@@ -8,7 +8,7 @@ import shlex
 import sqlite3
 from argparse import ArgumentParser
 from os import environ
-from shutil import copyfile
+from shutil import copyfile, rmtree
 from subprocess import run
 from tempfile import TemporaryDirectory
 from urllib.request import urlretrieve
@@ -98,6 +98,12 @@ with TemporaryDirectory() as tmpdir:
     print(' '.join(shlex.quote(arg) for arg in ff_args))
 
     run(ff_args, check=True)
+
+os.remove(args.filename)
+# If there are no other video files in its directory, delete
+dirname = os.path.dirname(args.filename)
+if not any(f for f in os.listdir(dirname) if f.endswith('.ts')):
+    rmtree(dirname)
 
 conn.execute('delete from SCHEDULED_RECORDING where oid = ?', (args.oid,))
 conn.commit()
