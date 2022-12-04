@@ -77,19 +77,22 @@ with TemporaryDirectory() as tmpdir:
 
     artwork_args = []
     if artwork:
-        print('Downloading ' + artwork)
-        artwork_file, _ = urlretrieve(artwork)
+        try:
+            print('Downloading ' + artwork)
+            artwork_file, _ = urlretrieve(artwork)
 
-        IMAGES = {
-            'image/jpeg': 'jpg',
-            'image/png': 'png'
-        }
+            IMAGES = {
+                'image/jpeg': 'jpg',
+                'image/png': 'png'
+            }
 
-        mimetype: str = magic.from_file(artwork_file, mime=True)
-        if image_ext := IMAGES.get(mimetype):
-            cover = os.path.join(tmpdir, 'cover.' + image_ext)
-            copyfile(artwork_file, cover)
-            artwork_args = ['-i', cover, '-map', '1', '-map', '0', '-disposition:0', 'attached_pic']
+            mimetype: str = magic.from_file(artwork_file, mime=True)
+            if image_ext := IMAGES.get(mimetype):
+                cover = os.path.join(tmpdir, 'cover.' + image_ext)
+                copyfile(artwork_file, cover)
+                artwork_args = ['-i', cover, '-map', '1', '-map', '0', '-disposition:0', 'attached_pic']
+        except Exception as err:
+            print(f"Error downloading artwork: {err}")
 
     output_file = os.path.join(RECORDED_DIR, os.path.basename(name) + '.mp4')
     ff_args = ['ffmpeg', '-i', args.filename] \
