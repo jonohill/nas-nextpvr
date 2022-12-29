@@ -1,0 +1,16 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+HIGHWATERMARK=90
+
+while true; do
+
+    used=$(df -h /recordings | awk 'NR==2 {print $5}' | sed 's/%//')
+    if [ "$used" -gt "$HIGHWATERMARK" ]; then
+        echo "Disk usage is $used% which is above $HIGHWATERMARK% threshold"
+        exit 1
+    fi
+
+    sleep 14m
+
+done
