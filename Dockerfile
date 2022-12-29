@@ -1,5 +1,5 @@
 FROM ghcr.io/jonohill/docker-s6-package:3.1.2.1 AS s6
-FROM rclone/rclone:1.60.1 AS rclone
+FROM rclone/rclone:1.61.1 AS rclone
 
 FROM curlimages/curl AS download
 
@@ -10,7 +10,7 @@ RUN mkdir nextpvr && \
     unzip nextpvr.zip -d nextpvr
     
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.11
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.12
 
 RUN apt-get update && apt-get install -y \
         dtv-scan-tables \
