@@ -7,7 +7,7 @@ import os
 import shlex
 import sqlite3
 from argparse import ArgumentParser
-from os import environ
+from os import environ, scandir
 from shutil import copyfile, rmtree
 from subprocess import run
 from tempfile import TemporaryDirectory
@@ -15,6 +15,32 @@ from urllib.request import urlretrieve
 from xml.etree import ElementTree
 
 import magic
+
+
+def env(var_name):
+    """Get env var by name"""
+    try:
+        return environ[var_name]
+    except KeyError:
+        print(f"{var_name} is not set")
+        exit(1)
+
+
+def delete_empty_dirs(dir: str):
+    has_files = False
+
+    with scandir(dir) as entries:
+        for entry in entries:
+            if entry.is_dir():
+                has_files = delete_empty_dirs(entry.path) and has_files
+            else:
+                has_files = True
+
+    if not has_files:
+        print(f'Deleting empty dir {dir}')
+        rmtree(dir)
+
+    return has_files
 
 
 class Args(argparse.Namespace):
@@ -29,14 +55,6 @@ parser.add_argument('channel_number')
 parser.add_argument('oid')
 args_ns = Args()
 args, _ = parser.parse_known_args(namespace=args_ns)
-
-def env(var_name):
-    """Get env var by name"""
-    try:
-        return environ[var_name]
-    except KeyError:
-        print(f"{var_name} is not set")
-        exit(1)
 
 print(f"Post processing {args.filename}...")
 
@@ -110,3 +128,6 @@ if not any(f for f in os.listdir(dirname) if f.endswith('.ts')):
 
 conn.execute('delete from SCHEDULED_RECORDING where oid = ?', (args.oid,))
 conn.commit()
+
+
+delete_empty_dirs('/recordings')
