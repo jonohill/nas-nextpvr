@@ -7,6 +7,7 @@ import os
 import shlex
 import sqlite3
 from argparse import ArgumentParser
+from datetime import datetime, timedelta
 from os import environ, scandir
 from shutil import copyfile, rmtree
 from subprocess import run
@@ -41,6 +42,24 @@ def delete_empty_dirs(dir: str):
         rmtree(dir)
 
     return has_files
+
+
+def delete_stale_recordings(dir: str):
+    to_delete = []
+
+    day_ago = (datetime.now() - timedelta(days=1)).timestamp()
+
+    with scandir(dir) as entries:
+        for entry in entries:
+            if entry.is_dir():
+                delete_stale_recordings(entry.path)
+            elif entry.is_file():
+                if entry.stat().st_mtime < day_ago:
+                    to_delete.append(entry.path)
+
+    for f in to_delete:
+        print(f'Deleting stale file {f}')
+        os.remove(f)
 
 
 class Args(argparse.Namespace):
@@ -129,5 +148,5 @@ if not any(f for f in os.listdir(dirname) if f.endswith('.ts')):
 conn.execute('delete from SCHEDULED_RECORDING where oid = ?', (args.oid,))
 conn.commit()
 
-
+delete_stale_recordings('/recordings')
 delete_empty_dirs('/recordings')
