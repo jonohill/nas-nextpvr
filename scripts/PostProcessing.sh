@@ -28,20 +28,17 @@ def env(var_name):
 
 
 def delete_empty_dirs(dir: str):
-    has_files = False
+    empty = True
 
     with scandir(dir) as entries:
         for entry in entries:
+            empty = False
             if entry.is_dir():
-                has_files = delete_empty_dirs(entry.path) and has_files
-            else:
-                has_files = True
+                delete_empty_dirs(entry.path)
 
-    if not has_files:
+    if empty:
         print(f'Deleting empty dir {dir}')
         rmtree(dir)
-
-    return has_files
 
 
 def delete_stale_recordings(dir: str):
