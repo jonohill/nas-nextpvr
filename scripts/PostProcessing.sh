@@ -38,7 +38,7 @@ def delete_empty_dirs(dir: str):
 
     if empty:
         print(f'Deleting empty dir {dir}')
-        rmtree(dir)
+        os.rmdir(dir)
 
 
 def delete_stale_recordings(dir: str):
