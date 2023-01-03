@@ -11,11 +11,11 @@ CONFIG_DIR="${NEXTPVR_DATADIR_USERDATA%/}"
 
 # Copy in scripts
 for script in /nextpvr/custom_scripts/*; do
-    if ! [ -f "$CONFIG_DIR/scripts/$(basename "$script")" ]; then
-        cp "$script" "$CONFIG_DIR/scripts/"
-    else
-        echo "$script already exists, skipping"
-    fi  
+    dest="$CONFIG_DIR/scripts/$(basename "$script")"
+    if [ -f "$dest" ]; then
+        echo "Overwriting script $dest"
+    fi
+    cp "$script" "$dest"
 done
 
 # wait for mount
