@@ -78,9 +78,15 @@ def is_movie(metadata: dict[str, str]):
     return False
 
 
-def copy_with_metadata(filename: str, out_dir: str, metadata: dict[str, str], artwork: str | None):
+def copy_with_metadata(filename: str, metadata: dict[str, str], artwork: str | None):
 
     name, _ = os.path.splitext(args.filename)
+
+    out_dir = RECORDED_DIR
+    if 'title' in metadata:
+        safe_title = ''.join(c for c in metadata['title'] if c.isalnum() or c in ' _-')
+        out_dir = os.path.join(RECORDED_DIR, safe_title)
+    out_dir = os.path.join(out_dir, 'Movies' if is_movie(metadata) else 'TV Shows')
 
     with TemporaryDirectory() as tmpdir:
 
@@ -162,8 +168,7 @@ for item in event_xml:
 
 
 if not is_blacklisted(args.filename):
-    out_dir = os.path.join(RECORDED_DIR, 'Movies' if is_movie(metadata) else 'TV Shows')
-    copy_with_metadata(args.filename, out_dir, metadata, artwork)
+    copy_with_metadata(args.filename, metadata, artwork)
 
 os.remove(args.filename)
 # If there are no other video files in its directory, delete
