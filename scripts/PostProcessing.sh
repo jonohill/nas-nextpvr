@@ -8,7 +8,7 @@ import shlex
 import sqlite3
 from argparse import ArgumentParser
 from datetime import datetime, timedelta
-from os import environ, scandir
+from os import environ, makedirs, scandir
 from shutil import copyfile, rmtree
 from subprocess import run
 from tempfile import TemporaryDirectory
@@ -83,17 +83,17 @@ def copy_with_metadata(filename: str, metadata: dict[str, str], artwork: Optiona
 
     name, _ = os.path.splitext(args.filename)
 
-    out_dir = RECORDED_DIR
+    out_dir = os.path.join(RECORDED_DIR, 'Movies' if is_movie(metadata) else 'TV Shows')
     if 'title' in metadata:
         safe_title = ''.join(c for c in metadata['title'] if c.isalnum() or c in ' _-')
         out_dir = os.path.join(RECORDED_DIR, safe_title)
-    out_dir = os.path.join(out_dir, 'Movies' if is_movie(metadata) else 'TV Shows')
+    makedirs(out_dir, exist_ok=True)
 
     with TemporaryDirectory() as tmpdir:
 
         metadata_args: list[str] = []
         for k, v in metadata.items():
-            metadata_args += ['-metadata', f'{k}={v}']        
+            metadata_args += ['-metadata', f'{k}={v}']
 
         artwork_args = []
         if artwork:
