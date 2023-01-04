@@ -12,6 +12,7 @@ from os import environ, scandir
 from shutil import copyfile, rmtree
 from subprocess import run
 from tempfile import TemporaryDirectory
+from typing import Optional
 from urllib.request import urlretrieve
 from xml.etree import ElementTree
 
@@ -78,7 +79,7 @@ def is_movie(metadata: dict[str, str]):
     return False
 
 
-def copy_with_metadata(filename: str, metadata: dict[str, str], artwork: str | None):
+def copy_with_metadata(filename: str, metadata: dict[str, str], artwork: Optional[str]):
 
     name, _ = os.path.splitext(args.filename)
 
