@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
         dtv-scan-tables \
         dvb-tools \
         ffmpeg \
-        fuse \
+        fuse3 \
         libc6  \
         libc6-dev \
         libdvbv5-0 \
