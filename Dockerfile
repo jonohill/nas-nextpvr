@@ -33,6 +33,7 @@ COPY --from=s6 / /
 COPY root/ /
 COPY --from=download --chown=nextpvr:nextpvr /home/curl_user/nextpvr /nextpvr
 COPY scripts /nextpvr/custom_scripts
+COPY shims /nextpvr/shims
 
 WORKDIR /nextpvr
 RUN find . -name DeviceHostLinux -exec chmod 755 {} \;
