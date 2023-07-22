@@ -39,5 +39,5 @@ if [ -n "$RECORDED_DIR" ]; then
 fi
 
 cd /nextpvr
-exec PATH="/nextpvr/shims:$PATH" s6-setuidgid nextpvr \
+PATH="/nextpvr/shims:$PATH" exec s6-setuidgid nextpvr \
     dotnet NextPVRServer.dll
