@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
-echo "~~ffmpeg shim~~" "$@"
+echo "ffmpeg shim. input args: $FFMPEG_INPUT_ARGS, output args: $FFMPEG_OUTPUT_ARGS"
 
-/usr/bin/ffmpeg "$@"
+# shellcheck disable=SC2086
+exec /usr/bin/ffmpeg $FFMPEG_INPUT_ARGS "$@" $FFMPEG_OUTPUT_ARGS

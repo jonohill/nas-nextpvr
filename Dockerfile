@@ -40,6 +40,8 @@ RUN find . -name DeviceHostLinux -exec chmod 755 {} \;
 
 ENV NEXTPVR_DATADIR_USERDATA=/config/
 ENV RCLONE_CONFIG=/config/rclone.conf
+ENV FFMPEG_INPUT_ARGS= \
+    FFMPEG_OUTPUT_ARGS=
 
 EXPOSE 8866
 
